@@ -1,10 +1,10 @@
 {
-  "INCIDENT": [],
-  "SIGNAL": [],
-  "STÍNY MLUVÍ": [],
-  "KONFLIKT": [],
-  "ROZPAD": [],
-  "FRAGMENTY": [],
-  "ERROR404": [],
-  "OUTRO": []
+  "INCIDENT": ["Signál zachycen", "Paměť fragmentována"],
+  "SIGNAL": ["Echo v šumu", "Něco poslouchá"],
+  "STÍNY MLUVÍ": ["Stíny nejsou prázdné"],
+  "KONFLIKT": ["Systém se rozpadá"],
+  "ROZPAD": ["Data ztracena"],
+  "FRAGMENTY": ["Fragment 011010"],
+  "ERROR404": ["Realita nenalezena"],
+  "OUTRO": ["Konec je pouze další začátek"]
 }
