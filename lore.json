@@ -1,10 +1,10 @@
-{
-  "INCIDENT":["první signál se objevil ve 03:14"],
-  "SIGNAL":["někdo odpověděl ze tmy"],
-  "STÍNY MLUVÍ":["hlas bez těla tě oslovil jménem"],
-  "KONFLIKT":["paměť začala mazat sama sebe"],
-  "ROZPAD":["realita se desynchronizuje"],
-  "FRAGMENTY":["archiv je rozbitý na kusy"],
-  "ERROR404":["už nejsi uživatel"],
-  "OUTRO":["ticho není prázdné"]
+TRACK_LORE = {
+"INCIDENT":"Něco se probudilo.",
+"SIGNAL":"Signál zachycen. Zdroj neznámý.",
+"STÍNY MLUVÍ":"Stíny začaly odpovídat.",
+"KONFLIKT":"Entita bojuje sama se sebou.",
+"ROZPAD":"Paměť se rozpadá.",
+"FRAGMENTY":"Zbyly jen fragmenty dat.",
+"ERROR404":"Pravda nebyla nalezena.",
+"OUTRO":"Ticho. Ale ne konec."
 }
