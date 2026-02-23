@@ -1,13 +1,22 @@
-import os, json, random
-from dotenv import load_dotenv
+# ===== IMPORTS =====
+import os
+import random
+import json
+from datetime import datetime
 from groq import Groq
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-# ==== ENV ====
-load_dotenv()
+# ===== TOKENS FROM RAILWAY ENV =====
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+if not TELEGRAM_TOKEN:
+    raise Exception("❌ TELEGRAM_TOKEN not set")
+if not GROQ_API_KEY:
+    raise Exception("❌ GROQ_API_KEY not set")
+
+# ===== GROQ CLIENT =====
 client = Groq(api_key=GROQ_API_KEY)
 
 # ==== LOAD FILES ====
