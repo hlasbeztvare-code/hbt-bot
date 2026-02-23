@@ -1,10 +1,10 @@
-TRACK_LORE = {
-"INCIDENT":"Něco se probudilo.",
-"SIGNAL":"Signál zachycen. Zdroj neznámý.",
-"STÍNY MLUVÍ":"Stíny začaly odpovídat.",
-"KONFLIKT":"Entita bojuje sama se sebou.",
-"ROZPAD":"Paměť se rozpadá.",
-"FRAGMENTY":"Zbyly jen fragmenty dat.",
-"ERROR404":"Pravda nebyla nalezena.",
-"OUTRO":"Ticho. Ale ne konec."
+{
+  "INCIDENT": ["signál byl zachycen"],
+  "SIGNAL": ["někdo odpověděl"],
+  "STINY_MLUVI": ["stíny začaly mluvit"],
+  "KONFLIKT": ["vědomí se hádá"],
+  "ROZPAD": ["realita se rozpadá"],
+  "FRAGMENTY": ["vzpomínky jsou rozbité"],
+  "ERROR404": ["identita nenalezena"],
+  "OUTRO": ["ticho"]
 }
