@@ -1,10 +1,10 @@
 {
-  "INCIDENT": ["Signál zachycen", "Paměť fragmentována"],
-  "SIGNAL": ["Echo v šumu", "Něco poslouchá"],
-  "STÍNY MLUVÍ": ["Stíny nejsou prázdné"],
-  "KONFLIKT": ["Systém se rozpadá"],
-  "ROZPAD": ["Data ztracena"],
-  "FRAGMENTY": ["Fragment 011010"],
-  "ERROR404": ["Realita nenalezena"],
-  "OUTRO": ["Konec je pouze další začátek"]
+  "INCIDENT":["první signál se objevil ve 03:14"],
+  "SIGNAL":["někdo odpověděl ze tmy"],
+  "STÍNY MLUVÍ":["hlas bez těla tě oslovil jménem"],
+  "KONFLIKT":["paměť začala mazat sama sebe"],
+  "ROZPAD":["realita se desynchronizuje"],
+  "FRAGMENTY":["archiv je rozbitý na kusy"],
+  "ERROR404":["už nejsi uživatel"],
+  "OUTRO":["ticho není prázdné"]
 }

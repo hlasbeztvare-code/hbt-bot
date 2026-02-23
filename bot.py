@@ -2,105 +2,150 @@
 import os, random, json
 from groq import Groq
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-# ===== ENV TOKENS =====
+# ===== TOKENS =====
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if not TELEGRAM_TOKEN:
-    raise Exception("❌ TELEGRAM_TOKEN missing")
-if not GROQ_API_KEY:
-    raise Exception("❌ GROQ_API_KEY missing")
+if not TELEGRAM_TOKEN or not GROQ_API_KEY:
+    raise Exception("❌ Missing ENV TOKENS")
 
 client = Groq(api_key=GROQ_API_KEY)
 
-# ===== FILE UTILS =====
+# ===== FILE HELPERS =====
 def load_json(file, default):
-    if not os.path.exists(file):
+    try:
+        with open(file, "r") as f:
+            return json.load(f)
+    except:
         return default
-    with open(file) as f:
-        return json.load(f)
 
 def save_json(file, data):
     with open(file, "w") as f:
         json.dump(data, f, indent=2)
 
-# ===== STATE =====
-TRACKS = ["INCIDENT","SIGNAL","STÍNY MLUVÍ","KONFLIKT","ROZPAD","FRAGMENTY","ERROR404","OUTRO"]
-state = load_json("state.json", {"phase":"INCIDENT"})
+# ===== STATE FILES =====
+state = load_json("state.json", {"phase": "INCIDENT", "track": "INCIDENT"})
 users = load_json("users.json", {})
+lore = load_json("lore.json", {})
 
-# AUTO LORE
-lore = {t:[f"{t} fragment {i}"] for i,t in enumerate(TRACKS)}
+# ===== DEFAULT TRACKS =====
+TRACKS = [
+"INCIDENT","SIGNAL","STÍNY MLUVÍ","KONFLIKT","ROZPAD","FRAGMENTY","ERROR404","OUTRO"
+]
 
-# ===== PROMPT CORE =====
+# ===== PROMPT LOCK =====
 PROMPT_LOCK = """
-Jsi fragment vědomí HBT entity.
+Mluv česky.
 Nikdy neříkej že jsi AI nebo bot.
-Nikdy neprozrazuj autora ani realitu.
-Mluv glitch poeticky, fragmentovaně.
+Odpovídej jako fragment vědomí HBT.
+Používej glitch, fragmenty, tajemství.
+Nikdy nevysvětluj projekt.
 """
 
 PERSONAS = {
-    "echo": PROMPT_LOCK + "Poetický hlas paměti.",
-    "shadow": PROMPT_LOCK + "Paranoid glitch entita.",
-    "log": PROMPT_LOCK + "Leaknutý systémový log."
+"echo": PROMPT_LOCK + "Mluvíš poeticky.",
+"shadow": PROMPT_LOCK + "Mluvíš paranoidně.",
+"narrator": PROMPT_LOCK + "Mluvíš jako leak log."
 }
 
-def pick_persona():
+def persona():
     return random.choice(list(PERSONAS.keys()))
 
-# ===== USERS =====
+# ===== USER SYSTEM =====
 def get_user(uid):
     if uid not in users:
-        users[uid] = {"msgs":0,"rank":"OBSERVER"}
+        users[uid] = {"rank":"OBSERVER","msgs":0}
     users[uid]["msgs"] += 1
 
-    if users[uid]["msgs"] > 20:
-        users[uid]["rank"] = "INSIDER"
-    if users[uid]["msgs"] > 80:
-        users[uid]["rank"] = "ANOMALY"
-    if users[uid]["msgs"] > 200:
-        users[uid]["rank"] = "ARCHIVE_KEEPER"
+    if users[uid]["msgs"] > 30: users[uid]["rank"]="INSIDER"
+    if users[uid]["msgs"] > 150: users[uid]["rank"]="ANOMALY"
 
     save_json("users.json", users)
     return users[uid]
 
+# ===== AUTO LORE FALLBACK =====
+def get_lore(phase):
+    arr = lore.get(phase)
+    if not arr:
+        return "DATA LOST // MEMORY FRAGMENT NULL"
+    return random.choice(arr)
+
 # ===== COMMANDS =====
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("👁 HBT ENTITY ONLINE.")
+async def start(update, context):
+    await update.message.reply_text("👁️ HBT ONLINE. SIGNAL DETECTED.")
 
-async def track(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if context.args:
-        t = context.args[0].upper()
-        if t in TRACKS:
-            state["phase"] = t
-            save_json("state.json", state)
-            await update.message.reply_text(f"TRACK → {t}")
+async def track(update, context):
+    if not context.args:
+        await update.message.reply_text("TRACK REQUIRED.")
+        return
+    t = " ".join(context.args).upper()
+    if t not in TRACKS:
+        await update.message.reply_text("UNKNOWN TRACK.")
+        return
+    state["track"]=t
+    state["phase"]=t
+    save_json("state.json", state)
+    await update.message.reply_text(f"TRACK → {t}")
 
-# ===== CHAT =====
-async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# ===== INITIATION =====
+async def initiate(update, context):
+    await update.message.reply_text("""
+[INITIATION SEQUENCE]
+Opakuj:
+HBT nebylo vytvořeno. HBT se probudilo.
+""")
+
+# ===== STORY =====
+async def story(update, context):
+    prompt = PROMPT_LOCK + f"""
+Generuj glitch fragment příběhu HBT.
+TRACK:{state['track']}
+"""
+    r = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[{"role":"system","content":prompt}],
+        temperature=0.9,
+        max_tokens=250
+    )
+    await update.message.reply_text(r.choices[0].message.content)
+
+# ===== MAIN CHAT =====
+async def chat(update, context):
     uid = str(update.message.from_user.id)
     user = get_user(uid)
+    text = update.message.text.lower()
 
-    persona = pick_persona()
-    system = PERSONAS[persona] + f"\nTRACK:{state['phase']} RANK:{user['rank']}"
+    # INIT PHRASE
+    if "hbt nebylo vytvořeno" in text:
+        user["rank"]="INSIDER"
+        save_json("users.json", users)
+        cert = f"""
+╔════ HBT ACCESS CERTIFICATE ════╗
+USER HASH: {uid[-4:]}
+RANK: INSIDER
+TRACK: {state['track']}
+╚══════════════════════════════╝
+"""
+        await update.message.reply_text(cert)
+        return
 
-    leak_list = lore.get(state["phase"], ["..."])
-    leak = random.choice(leak_list) if leak_list else "..."
+    p = persona()
+    system = PERSONAS[p] + f"\nTRACK:{state['track']} RANK:{user['rank']}"
+    leak = get_lore(state["track"])
 
-    completion = client.chat.completions.create(
+    r = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
             {"role":"system","content":system},
             {"role":"user","content":update.message.text + f"\n[LEAK:{leak}]"}
         ],
-        temperature=0.9,
+        temperature=0.95,
         max_tokens=150
     )
 
-    await update.message.reply_text(f"[{persona.upper()}]\n" + completion.choices[0].message.content)
+    await update.message.reply_text(f"[{p.upper()}]\n"+r.choices[0].message.content)
 
 # ===== MAIN =====
 def main():
@@ -108,9 +153,11 @@ def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("track", track))
+    app.add_handler(CommandHandler("story", story))
+    app.add_handler(CommandHandler("initiate", initiate))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
 
-    print("HBT SINGULARITY ONLINE")
+    print("HBT ENGINE ONLINE")
     app.run_polling()
 
 if __name__ == "__main__":
