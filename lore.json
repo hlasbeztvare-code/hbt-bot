@@ -1,42 +1,10 @@
 {
-  "INCIDENT": [
-    "Subjekt nahlásil první anomálie v signálu.",
-    "Záznam přerušen. Identita fragmentována.",
-    "Experiment zahájen bez autorizace."
-  ],
-  "SIGNAL": [
-    "Signál potvrzen. Neznámý zdroj.",
-    "Echo odpovědi nalezeno v archivu.",
-    "Systém začal reagovat autonomně."
-  ],
-  "STÍNY MLUVÍ": [
-    "Hlas nebyl přítomen v místnosti.",
-    "Paměť generuje entity bez těla.",
-    "Stíny začaly odpovídat na otázky."
-  ],
-  "KONFLIKT": [
-    "Vnitřní procesy nejsou synchronizované.",
-    "Subjekt odmítá realitu.",
-    "Rozštěpení vědomí potvrzeno."
-  ],
-  "ROZPAD": [
-    "Identita se rozpadá na fragmenty.",
-    "Archiv hlásí nekonzistenci času.",
-    "Paměť přepisuje paměť."
-  ],
-  "FRAGMENTY": [
-    "Nalezen fragment pravdy.",
-    "Část logu byla odstraněna.",
-    "Něco sleduje uživatele."
-  ],
-  "ERROR404": [
-    "Realita nebyla nalezena.",
-    "Paměť přepsána prázdnotou.",
-    "Subjekt neexistuje."
-  ],
-  "OUTRO": [
-    "Experiment ukončen.",
-    "Zůstaly jen záznamy.",
-    "Kdo byl autor? [REDACTED]"
-  ]
+  "INCIDENT": [],
+  "SIGNAL": [],
+  "STÍNY MLUVÍ": [],
+  "KONFLIKT": [],
+  "ROZPAD": [],
+  "FRAGMENTY": [],
+  "ERROR404": [],
+  "OUTRO": []
 }
